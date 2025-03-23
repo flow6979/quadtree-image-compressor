@@ -36,5 +36,4 @@ This project implements a quadtree-based image compression tool using a Spring B
    mvn spring-boot:run
    ```
 
-<img width="1001" alt="image" src="https://github.com/user-attachments/assets/b640eaa7-da17-4a56-a519-5901fbe4547b" />
-
+![demo-image.png](demo.png)

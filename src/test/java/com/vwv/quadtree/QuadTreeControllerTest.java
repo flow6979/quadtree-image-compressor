@@ -12,7 +12,6 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +37,6 @@ class QuadTreeControllerTest {
 
     @Test
     void testCompress_Success() throws IOException {
-        // Arrange
         MockMultipartFile mockFile = new MockMultipartFile(
                 "image",
                 "test-image.png",
@@ -48,10 +46,8 @@ class QuadTreeControllerTest {
         QuadTreeNode mockNode = new QuadTreeNode(1);
         when(quadTreeService.compress(any(File.class))).thenReturn(mockNode);
 
-        // Act
         QuadTreeNode result = quadTreeController.compress(mockFile);
 
-        // Assert
         assertNotNull(result);
         assertEquals(mockNode, result);
         verify(quadTreeService, times(1)).compress(any(File.class));
@@ -59,7 +55,6 @@ class QuadTreeControllerTest {
 
     @Test
     void testCompress_IOException() throws IOException {
-        // Arrange
         MockMultipartFile mockFile = new MockMultipartFile(
                 "image",
                 "test-image.png",
@@ -68,24 +63,20 @@ class QuadTreeControllerTest {
         );
         when(quadTreeService.compress(any(File.class))).thenThrow(new IOException("Compression failed"));
 
-        // Act & Assert
         assertThrows(IOException.class, () -> quadTreeController.compress(mockFile));
         verify(quadTreeService, times(1)).compress(any(File.class));
     }
 
     @Test
     void testDecompress_Success() throws IOException {
-        // Arrange
         QuadTreeNode root = new QuadTreeNode();
         int width = 100;
         int height = 100;
         File mockFile = new File(filePath + "decompressed-test.png");
         when(quadTreeService.decompress(eq(root), eq(width), eq(height), anyString())).thenReturn(mockFile);
 
-        // Act
         ResponseEntity<FileSystemResource> response = quadTreeController.decompress(root, width, height);
 
-        // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getBody() instanceof FileSystemResource);
@@ -96,34 +87,29 @@ class QuadTreeControllerTest {
 
     @Test
     void testDecompress_IOException() throws IOException {
-        // Arrange
         QuadTreeNode root = new QuadTreeNode();
         int width = 100;
         int height = 100;
         when(quadTreeService.decompress(eq(root), eq(width), eq(height), anyString()))
                 .thenThrow(new IOException("Decompression failed"));
 
-        // Act & Assert
         assertThrows(IOException.class, () -> quadTreeController.decompress(root, width, height));
         verify(quadTreeService, times(1)).decompress(eq(root), eq(width), eq(height), anyString());
     }
 
     @Test
     void testDecompress_InvalidInput() throws IOException {
-        // Arrange
         QuadTreeNode root = null; // Invalid input
         int width = -1;   // Invalid width
         int height = 100;
 
         // No need to mock decompress since it won't be called due to validation
 
-        // Act
         ResponseEntity<FileSystemResource> response = quadTreeController.decompress(root, width, height);
 
-        // Assert
         assertNotNull(response);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode()); // Expect 400
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNull(response.getBody());
-        verify(quadTreeService, never()).decompress(any(), anyInt(), anyInt(), anyString()); // Service not called
+        verify(quadTreeService, never()).decompress(any(), anyInt(), anyInt(), anyString());
     }
 }

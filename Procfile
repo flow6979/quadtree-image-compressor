@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -jar target/quadtree-image-compressor-0.0.1-SNAPSHOT.jar
+web: java -Xmx256m -Xms256m -jar /workspace/app.jar

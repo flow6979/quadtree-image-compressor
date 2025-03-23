@@ -40,6 +40,10 @@ public class QuadTreeController {
             @RequestParam int width,
             @RequestParam int height) throws IOException {
 
+        if (root == null || width <= 0 || height <= 0) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
         String fileName = "decompressed-" + UUID.randomUUID() + ".png";
         String outputPath = filePath + fileName;
 
